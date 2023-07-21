@@ -9,17 +9,19 @@
         NavLi,
         Button,
         Dropdown,
-        DropdownItem,
-        Chevron
+        Chevron,
+        DropdownItem
     } from 'flowbite-svelte';
+    import type { LayoutData } from './$types';
     import { onMount } from 'svelte';
     import { invalidate } from '$app/navigation';
+    import { Toaster } from 'svelte-french-toast';
 
     const navigation = [{ label: 'Home', href: '/' }];
 
-    export let data;
+    export let data: LayoutData;
 
-    $: ({ supabase, session } = data);
+    $: ({ session, supabase } = data);
 
     onMount(() => {
         const {
@@ -35,16 +37,16 @@
 </script>
 
 <svelte:head>
-    <title>Starter Project</title>
+    <title>Contactly</title>
 </svelte:head>
-
+<Toaster />
 <div class="flex h-full flex-col">
     <Navbar let:hidden let:toggle>
         <NavBrand href="/">
             <img
                 src="/images/logo.png"
                 class="mr-3 h-6 sm:h-9"
-                alt="Starter Project Logo"
+                alt="Contactly Logo"
             />
             <span
                 class="self-center whitespace-nowrap text-xl font-semibold dark:text-white"
@@ -54,15 +56,17 @@
         </NavBrand>
         <div class="flex md:order-2">
             {#if session}
-                <Button color="light"><Chevron>Account</Chevron></Button>
+                <Button size="sm" color="light"
+                    ><Chevron>Account</Chevron></Button
+                >
                 <Dropdown>
                     <div slot="header" class="px-4 py-2">
-                        <span class="block truncate text-sm font-medium">
+                        <span class="block w-36 truncate text-xs font-medium">
                             {session.user.email}
                         </span>
                     </div>
                     <DropdownItem href="/account">Settings</DropdownItem>
-                    <DropdownItem href="/account">Billing</DropdownItem>
+                    <DropdownItem href="/account/billing">Billing</DropdownItem>
                     <form action="/logout" method="POST">
                         <DropdownItem type="submit" slot="footer"
                             >Sign out</DropdownItem
@@ -72,7 +76,7 @@
             {:else}
                 <div class="flex items-center gap-2">
                     <Button href="/login" size="sm">Login</Button>
-                    <Button href="/register" size="sm" color="alternative"
+                    <Button href="/register" size="sm" color="light"
                         >Register</Button
                     >
                 </div>
