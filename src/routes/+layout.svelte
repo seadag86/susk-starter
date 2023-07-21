@@ -21,12 +21,14 @@
 
     export let data: LayoutData;
 
-    $: ({ session, supabase } = data);
+    let { supabase, session } = data;
+    $: ({ supabase, session } = data);
 
     onMount(() => {
         const {
             data: { subscription }
         } = supabase.auth.onAuthStateChange((event, _session) => {
+            console.log(event, _session);
             if (_session?.expires_at !== session?.expires_at) {
                 invalidate('supabase:auth');
             }
@@ -37,8 +39,9 @@
 </script>
 
 <svelte:head>
-    <title>Contactly</title>
+    <title>Starter Project</title>
 </svelte:head>
+
 <Toaster />
 <div class="flex h-full flex-col">
     <Navbar let:hidden let:toggle>
@@ -46,7 +49,7 @@
             <img
                 src="/images/logo.png"
                 class="mr-3 h-6 sm:h-9"
-                alt="Contactly Logo"
+                alt="Starter Project Logo"
             />
             <span
                 class="self-center whitespace-nowrap text-xl font-semibold dark:text-white"
@@ -75,10 +78,10 @@
                 </Dropdown>
             {:else}
                 <div class="flex items-center gap-2">
-                    <Button href="/login" size="sm">Login</Button>
-                    <Button href="/register" size="sm" color="light"
-                        >Register</Button
-                    >
+                    <Button href="/otp" size="sm">Login</Button>
+                    <Button href="/register" size="sm" color="light">
+                        Register
+                    </Button>
                 </div>
             {/if}
             <NavHamburger on:click={toggle} />
