@@ -1,0 +1,48 @@
+<script lang="ts">
+    import { Card, Button } from 'flowbite-svelte';
+    import { superForm } from 'sveltekit-superforms/client';
+    import type { SuperValidated } from 'sveltekit-superforms';
+    import type { PasswordLoginSchema } from '$lib/schemas';
+
+    export let data: SuperValidated<PasswordLoginSchema>;
+
+    const { form, errors, enhance } = superForm(data, {
+        resetForm: true
+    });
+</script>
+
+<div class="max-w-2xl text-center">
+    <h1 class="text-4xl font-semibold">Login with Email and Password</h1>
+</div>
+<Card class="mt-6 w-full" padding="xl" size="md">
+    <form
+        class="flex flex-col space-y-6"
+        method="POST"
+        action="?/loginPassword"
+        use:enhance
+    >
+        <label class="space-y-2" for="email">
+            <span>Email</span>
+            <input type="email" name="email" bind:value={$form.email} />
+            {#if $errors.email}
+                <div class="block text-red-600 dark:text-red-500">
+                    {$errors.email}
+                </div>
+            {/if}
+        </label>
+        <label class="space-y-2" for="password">
+            <span>Password</span>
+            <input
+                type="password"
+                name="password"
+                bind:value={$form.password}
+            />
+            {#if $errors.password}
+                <div class="block text-red-600 dark:text-red-500">
+                    {$errors.password}
+                </div>
+            {/if}
+        </label>
+        <Button type="submit" class="w-full">Login</Button>
+    </form>
+</Card>

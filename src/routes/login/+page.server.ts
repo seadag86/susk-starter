@@ -2,12 +2,8 @@ import { z } from 'zod';
 import { setError, superValidate } from 'sveltekit-superforms/server';
 import { fail, redirect } from '@sveltejs/kit';
 import { AuthApiError } from '@supabase/supabase-js';
+import { otpLoginSchema, passwordLoginSchema } from '$lib/schemas';
 import type { Actions, PageServerLoad } from './$types';
-
-const loginUserSchema = z.object({
-    email: z.string().email('Invalid email address'),
-    password: z.string().min(8, 'Password must be at least 6 characters')
-});
 
 export const load: PageServerLoad = async (event) => {
     const session = await event.locals.getSession();
@@ -18,31 +14,72 @@ export const load: PageServerLoad = async (event) => {
     }
 
     return {
-        form: await superValidate(event, loginUserSchema)
+        passwordLoginForm: await superValidate(event, passwordLoginSchema, {
+            id: 'passwordLogin'
+        }),
+        otpLoginForm: await superValidate(event, otpLoginSchema, {
+            id: 'otpLogin'
+        })
     };
 };
 
 export const actions: Actions = {
-    default: async (event) => {
-        const form = await superValidate(event, loginUserSchema);
+    loginPassword: async (event) => {
+        const passwordLoginForm = await superValidate(
+            event,
+            passwordLoginSchema
+        );
 
-        if (!form.valid) {
-            return fail(400, { form });
+        if (!passwordLoginForm.valid) {
+            return fail(400, { passwordLoginForm });
         }
 
         const { error: authError } =
-            await event.locals.supabase.auth.signInWithPassword(form.data);
+            await event.locals.supabase.auth.signInWithPassword(
+                passwordLoginForm.data
+            );
 
         if (authError) {
             if (authError instanceof AuthApiError && authError.status === 400) {
-                setError(form, 'email', 'Invalid credentials');
-                setError(form, 'password', 'Invalid credentials');
+                setError(passwordLoginForm, 'email', 'Invalid credentials');
+                setError(passwordLoginForm, 'password', 'Invalid credentials');
                 return fail(400, {
-                    form
+                    passwordLoginForm
                 });
             }
         }
 
         throw redirect(303, '/');
+    },
+    loginOtp: async (event) => {
+        const otpLoginForm = await superValidate(event, otpLoginSchema);
+
+        if (!otpLoginForm.valid) {
+            return fail(400, { otpLoginForm });
+        }
+
+        const callbackUrl = `${event.url.protocol}${
+            event.url.hostname === 'localhost'
+                ? 'localhost:5173'
+                : event.url.hostname
+        }/auth/callback`;
+        console.log(callbackUrl);
+
+        const { error } = await event.locals.supabase.auth.signInWithOtp({
+            ...otpLoginForm.data,
+            options: {
+                emailRedirectTo: callbackUrl
+            }
+        });
+
+        if (error) {
+            console.log(error);
+            return setError(
+                otpLoginForm,
+                'An error occurred while registering.'
+            );
+        }
+
+        return { otpLoginForm };
     }
 };

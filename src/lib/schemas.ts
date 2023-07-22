@@ -19,8 +19,14 @@ export const registerUserSchema = z.object({
 export const profileSchema = registerUserSchema.pick({ full_name: true });
 export type ProfileSchema = typeof profileSchema;
 
-export const otpSchema = registerUserSchema.pick({ email: true });
-export type OtpSchema = typeof registerUserSchema;
+export const passwordLoginSchema = registerUserSchema.pick({
+    email: true,
+    password: true
+});
+export type PasswordLoginSchema = typeof passwordLoginSchema;
+
+export const otpLoginSchema = registerUserSchema.pick({ email: true });
+export type OtpLoginSchema = typeof otpLoginSchema;
 
 export const emailSchema = registerUserSchema.pick({ email: true });
 export type EmailSchema = typeof emailSchema;

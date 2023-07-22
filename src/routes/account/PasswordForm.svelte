@@ -4,9 +4,9 @@
     import type { PasswordSchema } from '$lib/schemas';
 
     import { superForm } from 'sveltekit-superforms/client';
-    import type { Validation } from 'sveltekit-superforms';
+    import type { SuperValidated } from 'sveltekit-superforms';
 
-    export let data: Validation<PasswordSchema>;
+    export let data: SuperValidated<PasswordSchema>;
 
     const { form, errors, enhance } = superForm(data, {
         resetForm: true

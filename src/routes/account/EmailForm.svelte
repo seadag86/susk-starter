@@ -1,12 +1,12 @@
 <script lang="ts">
     import { Mail } from 'lucide-svelte';
     import { Button } from 'flowbite-svelte';
-    import type { Validation } from 'sveltekit-superforms';
+    import type { SuperValidated } from 'sveltekit-superforms';
     import type { EmailSchema } from '$lib/schemas';
 
     import { superForm } from 'sveltekit-superforms/client';
 
-    export let data: Validation<EmailSchema>;
+    export let data: SuperValidated<EmailSchema>;
 
     const { form, errors, enhance } = superForm(data);
 </script>

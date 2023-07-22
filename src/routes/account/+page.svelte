@@ -3,8 +3,8 @@
     import { Button } from 'flowbite-svelte';
     import ProfileForm from './ProfileForm.svelte';
     import EmailForm from './EmailForm.svelte';
-    import type { PageData } from './$types';
     import PasswordForm from './PasswordForm.svelte';
+    import type { PageData } from './$types';
 
     export let data: PageData;
 </script>

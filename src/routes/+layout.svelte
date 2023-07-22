@@ -59,9 +59,12 @@
         </NavBrand>
         <div class="flex md:order-2">
             {#if session}
-                <Button size="sm" color="light"
-                    ><Chevron>Account</Chevron></Button
-                >
+                <Button size="sm" color="light">
+                    <div class="flex items-start">
+                        <span>Account</span>
+                        <Chevron />
+                    </div>
+                </Button>
                 <Dropdown>
                     <div slot="header" class="px-4 py-2">
                         <span class="block w-36 truncate text-xs font-medium">
@@ -69,16 +72,15 @@
                         </span>
                     </div>
                     <DropdownItem href="/account">Settings</DropdownItem>
-                    <DropdownItem href="/account/billing">Billing</DropdownItem>
                     <form action="/logout" method="POST">
-                        <DropdownItem type="submit" slot="footer"
-                            >Sign out</DropdownItem
-                        >
+                        <DropdownItem type="submit" slot="footer">
+                            Sign out
+                        </DropdownItem>
                     </form>
                 </Dropdown>
             {:else}
                 <div class="flex items-center gap-2">
-                    <Button href="/otp" size="sm">Login</Button>
+                    <Button href="/login" size="sm">Login</Button>
                     <Button href="/register" size="sm" color="light">
                         Register
                     </Button>
@@ -88,9 +90,9 @@
         </div>
         <NavUl {hidden}>
             {#each navigation as nav}
-                <NavLi href={nav.href} active={$page.url.pathname === nav.href}
-                    >{nav.label}</NavLi
-                >
+                <NavLi href={nav.href} active={$page.url.pathname === nav.href}>
+                    {nav.label}
+                </NavLi>
             {/each}
         </NavUl>
     </Navbar>
