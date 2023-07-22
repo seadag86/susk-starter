@@ -76,10 +76,46 @@ export const actions: Actions = {
             console.log(error);
             return setError(
                 otpLoginForm,
-                'An error occurred while registering.'
+                'An error occurred while logging in.'
             );
         }
 
         return { otpLoginForm };
+    },
+    loginGoogle: async (event) => {
+        const { error } = await event.locals.supabase.auth.signInWithOAuth({
+            provider: 'google'
+        });
+
+        if (error) {
+            console.log(error);
+            return fail(500, { error: 'An error occurred while logging in.' });
+        }
+
+        throw redirect(303, '/');
+    },
+    loginTwitter: async (event) => {
+        const { error } = await event.locals.supabase.auth.signInWithOAuth({
+            provider: 'twitter'
+        });
+
+        if (error) {
+            console.log(error);
+            return fail(500, { error: 'An error occurred while logging in.' });
+        }
+
+        throw redirect(303, '/');
+    },
+    loginFacebook: async (event) => {
+        const { error } = await event.locals.supabase.auth.signInWithOAuth({
+            provider: 'facebook'
+        });
+
+        if (error) {
+            console.log(error);
+            return fail(500, { error: 'An error occurred while logging in.' });
+        }
+
+        throw redirect(303, '/');
     }
 };
